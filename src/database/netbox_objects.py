@@ -1,8 +1,11 @@
 """
-NetBox Helper Functions
+NetBox Object Helpers
 
 This module provides helper functions for fetching and managing NetBox objects
 (VRF, VLAN, Tenant, Role, Site Group, VLAN Group).
+
+Renamed from netbox_helpers.py. The class NetBoxHelpers is now NetBoxObjects.
+The method get_site() is renamed to get_site_group().
 """
 
 import logging
@@ -12,12 +15,14 @@ from fastapi import HTTPException
 
 from .netbox_client import get_netbox_client, run_netbox_get, run_netbox_write
 from .netbox_cache import get_cached, set_cache, invalidate_cache
-from .netbox_utils import safe_get_id, safe_get_attr
+from .netbox_utils import (
+    safe_get_id, safe_get_attr,
+    get_tenant_cache_key, get_role_cache_key,
+    format_vlan_group_name, get_vlan_group_cache_key,
+)
 from .netbox_constants import (
     TENANT_REDBULL, ROLE_DATA, STATUS_ACTIVE, VLAN_GROUP_PREFIX,
     CACHE_KEY_REDBULL_TENANT_ID, CACHE_KEY_PREFIXES, CACHE_KEY_VLANS,
-    get_tenant_cache_key, get_role_cache_key,
-    format_vlan_group_name, get_vlan_group_cache_key,
     CACHE_TTL_SHORT, CACHE_TTL_LONG
 )
 
@@ -26,10 +31,10 @@ logger = logging.getLogger(__name__)
 
 def _sanitize_slug(text: str) -> str:
     """Convert text to a valid NetBox slug (letters, numbers, underscores, hyphens only)
-    
+
     Args:
         text: Input text to convert to slug
-        
+
     Returns:
         Valid slug string
     """
@@ -46,14 +51,14 @@ def _sanitize_slug(text: str) -> str:
     return slug
 
 
-class NetBoxHelpers:
+class NetBoxObjects:
     """Helper class for NetBox object operations"""
 
     def __init__(self, nb_client):
         """Initialize with NetBox client"""
         self.nb = nb_client
 
-    async def get_site(self, site_slug: str):
+    async def get_site_group(self, site_slug: str):
         """Get site group from NetBox (must already exist - no creation)
 
         Tries exact match first, then falls back to lowercase for compatibility.
@@ -231,20 +236,6 @@ class NetBoxHelpers:
             logger.error(f"Error fetching tenant '{tenant_name}' from NetBox: {e}", exc_info=True)
             return None
 
-    async def get_redbull_tenant_id(self) -> Optional[int]:
-        """Get cached RedBull tenant ID for filtering"""
-        cached_id = get_cached(CACHE_KEY_REDBULL_TENANT_ID)
-        if cached_id is not None:
-            return cached_id
-
-        # Fetch tenant ID
-        tenant = await self.get_tenant(TENANT_REDBULL)
-        if tenant:
-            set_cache(CACHE_KEY_REDBULL_TENANT_ID, tenant.id)
-            return tenant.id
-
-        return None
-
     async def get_role(self, role_name: str, model_type: str = "vlan"):
         """Get role from NetBox (cached for performance)
 
@@ -346,4 +337,3 @@ class NetBoxHelpers:
         except Exception as e:
             logger.error(f"Error fetching VRFs from NetBox: {e}", exc_info=True)
             raise
-

@@ -5,14 +5,14 @@
 See: .planning/PROJECT.md (updated 2026-03-27)
 
 **Core value:** Operators can create, allocate, and search VLANs and prefixes across any VRF+Site combination without polluting each other's data in NetBox.
-**Current focus:** Phase 2: Validation Rationalization
+**Current focus:** Phase 3: Database Layer Refactor
 
 ## Current Position
 
-Phase: 2 of 2 (Validation Rationalization)
+Phase: 3 of 3 (Database Layer Refactor)
 Plan: 2 of 2 in current phase
 Status: Complete
-Last activity: 2026-03-28 -- Completed 02-02-PLAN.md (EPG regex + subnet mask range relaxation)
+Last activity: 2026-03-28 -- 03-02 complete: caller migration done, MongoDB abstraction layer fully removed
 
 Progress: [██████████] 100%
 
@@ -36,6 +36,11 @@ Progress: [██████████] 100%
 
 *Updated after each plan completion*
 
+| Phase                                | Total | Tasks | Files |
+|--------------------------------------|-------|-------|-------|
+| Phase 03-database-layer-refactor P01 | 5 min | 3     | 8     |
+| Phase 03-database-layer-refactor P02 | 8 | 3 tasks | 5 files |
+
 ## Accumulated Context
 
 ### Decisions
@@ -54,6 +59,15 @@ Recent decisions affecting current work:
 - [02-01] Removed 4 dead validator methods with zero call sites -- `validate_concurrent_modification`, `validate_timezone_aware_datetime`, `validate_json_serializable`, `validate_update_data`
 - [Phase 02-02]: [02-02] EPG name allows dots and forward slashes -- operators routinely name segments after the prefix they represent; NetBox has no VLAN name character restrictions
 - [Phase 02-02]: [02-02] /31 subnets allowed per RFC 3021 -- valid for point-to-point links; num_addresses < 2 threshold is sufficient, usable_hosts guard removed
+- [Phase 03]: [03-01] MongoDB query interpreter deleted — Python-native typed parameter filtering replaces _matches_query/_matches_condition (65 lines removed)
+- [Phase 03]: [03-01] NetBoxHelpers renamed to NetBoxObjects; get_site renamed to get_site_group; get_redbull_tenant_id collapsed
+- [Phase 03]: [03-01] 5 cache-key helpers moved from netbox_constants.py to netbox_utils.py; nb_client param removed from prefix_to_segment
+- [Phase 03]: [03-02] allocated_at derived on read in prefix_to_segment — no allocation_time parameter needed at call sites
+- [Phase 03]: [03-02] search_segments uses Python re.compile inline loop — identical semantics to removed MongoDB $regex/$or
+
+### Roadmap Evolution
+
+- Phase 3 added: Database Layer Refactor — collapse 8-file over-engineered database module into a clean, domain-named structure; remove MongoDB abstraction layer, dead code, and misleading names
 
 ### Pending Todos
 
@@ -67,5 +81,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-28
-Stopped at: Completed 02-02-PLAN.md (EPG regex + subnet mask range relaxation)
+Stopped at: Completed 03-02-PLAN.md (caller migration: MongoDB abstraction layer fully removed from src/)
 Resume file: None

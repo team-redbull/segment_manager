@@ -34,8 +34,7 @@ class AllocationService:
                 cluster_name=existing["cluster_name"],
                 site=existing["site"],
                 segment=existing["segment"],
-                epg_name=existing["epg_name"],
-                allocated_at=existing["allocated_at"]
+                epg_name=existing["epg_name"]
             )
 
         # Atomically find and allocate an available segment for this site
@@ -54,8 +53,7 @@ class AllocationService:
             cluster_name=request.cluster_name,
             site=request.site,
             segment=allocated_segment["segment"],
-            epg_name=allocated_segment["epg_name"],
-            allocated_at=allocated_segment["allocated_at"]
+            epg_name=allocated_segment["epg_name"]
         )
 
     @staticmethod

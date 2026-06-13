@@ -34,11 +34,8 @@ class ExportService:
                 'EPG Name': segment.get('epg_name', ''),
                 'Segment': segment.get('segment', ''),
                 'DHCP': 'Yes' if segment.get('dhcp', False) else 'No',
-                'Description': segment.get('description', ''),
                 'Cluster Name': segment.get('cluster_name', '') if segment.get('cluster_name') else 'Available',
-                'Allocated At': segment.get('allocated_at', ''),
                 'Released': 'Yes' if segment.get('released', False) else 'No',
-                'Released At': segment.get('released_at', ''),
                 'Status': 'Allocated' if segment.get('cluster_name') and not segment.get('released', False) else 'Available'
             })
         return export_data

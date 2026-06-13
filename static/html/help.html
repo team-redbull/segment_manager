@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -206,11 +206,6 @@
     </style>
 </head>
 <body>
-    <div class="theme-toggle" id="themeToggle">
-        <span class="theme-icon" id="themeIcon">🌙</span>
-        <span id="themeText">Dark</span>
-    </div>
-    
     <div class="help-container">
         <div class="back-link">
             <a href="/" class="btn btn-secondary">&larr; Back to VLAN Manager</a>
@@ -599,43 +594,5 @@ curl "http://localhost:8000/api/segments/search?q=cluster&site=site1&allocated=t
         </div>
     </div>
 
-    <script>
-        // Theme management for help page
-        let isDarkMode = localStorage.getItem('darkMode') === 'true';
-
-        function initTheme() {
-            const themeToggle = document.getElementById('themeToggle');
-            const themeIcon = document.getElementById('themeIcon');
-            const themeText = document.getElementById('themeText');
-            
-            // Apply saved theme or default to light
-            applyTheme(isDarkMode);
-            
-            // Theme toggle click handler
-            themeToggle.addEventListener('click', () => {
-                isDarkMode = !isDarkMode;
-                applyTheme(isDarkMode);
-                localStorage.setItem('darkMode', isDarkMode.toString());
-            });
-        }
-
-        function applyTheme(darkMode) {
-            const themeIcon = document.getElementById('themeIcon');
-            const themeText = document.getElementById('themeText');
-            
-            if (darkMode) {
-                document.documentElement.setAttribute('data-theme', 'dark');
-                themeIcon.textContent = '☀️';
-                themeText.textContent = 'Light';
-            } else {
-                document.documentElement.removeAttribute('data-theme');
-                themeIcon.textContent = '🌙';
-                themeText.textContent = 'Dark';
-            }
-        }
-
-        // Initialize theme when page loads
-        document.addEventListener('DOMContentLoaded', initTheme);
-    </script>
 </body>
 </html>

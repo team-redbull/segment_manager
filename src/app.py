@@ -9,7 +9,6 @@ from .config.settings import setup_logging, SITES, validate_site_prefixes
 from .api.routes import router
 from .database import init_storage, close_storage
 from .auth.auth import init_sessions
-import os
 
 # Setup logging
 logger = setup_logging()

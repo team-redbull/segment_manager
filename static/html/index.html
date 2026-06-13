@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,53 +7,11 @@
     <link rel="stylesheet" href="/static/css/styles.css">
 </head>
 <body>
-    <div class="theme-toggle" id="themeToggle">
-        <span class="theme-icon" id="themeIcon">🌙</span>
-        <span id="themeText">Dark</span>
-    </div>
-    
     <div class="container">
         <div class="header-bar">
             <h1 style="margin: 0;">🌐 VLAN Segment Manager</h1>
-            <div class="header-actions">
-                <button id="loginBtn" class="btn btn-primary" style="display: none;">
-                    🔐 Login
-                </button>
-                <div id="authSection" style="display: none;">
-                    <span id="userGreeting" style="color: white; margin-right: 10px; font-size: 14px;"></span>
-                    <button id="logoutBtn" class="btn btn-secondary">Logout</button>
-                </div>
-            </div>
         </div>
-        
-        <!-- Login Modal -->
-        <div id="loginModal" class="modal" style="display: none;">
-            <div class="modal-content login-modal-content">
-                <div class="modal-header">
-                    <h2>🔐 Login</h2>
-                    <button class="close-modal" onclick="closeLoginModal()">&times;</button>
-                </div>
-                <form id="loginForm">
-                    <p style="margin-bottom: 20px; color: var(--text-secondary); text-align: center;">
-                        Login to create, update, or delete segments
-                    </p>
-                    <div class="form-group">
-                        <label for="loginUsername">Username</label>
-                        <input type="text" id="loginUsername" placeholder="Enter username" required autofocus>
-                    </div>
-                    <div class="form-group">
-                        <label for="loginPassword">Password</label>
-                        <input type="password" id="loginPassword" placeholder="Enter password" required>
-                    </div>
-                    <div id="loginError" class="error-banner" style="display: none; margin-bottom: 15px;"></div>
-                    <div style="display: flex; gap: 10px;">
-                        <button type="button" class="btn btn-secondary" onclick="closeLoginModal()" style="flex: 1;">Cancel</button>
-                        <button type="submit" class="btn btn-primary" style="flex: 1;">Login</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-        
+
         <div id="errorBanner" class="error-banner"></div>
         <div id="successBanner" class="success-banner"></div>
         
@@ -61,73 +19,6 @@
             <div class="stat-card">
                 <h3>Loading...</h3>
             </div>
-        </div>
-        
-        <div class="main-content">
-            <div class="card" id="addSegmentCard" style="display: none;">
-                <h2>Add Segment</h2>
-                <form id="addSegmentForm">
-                    <div class="form-group">
-                        <label for="segmentSite">Site</label>
-                        <select id="segmentSite" required>
-                            <option value="">Select site...</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="vlanId">VLAN ID</label>
-                        <input type="number" id="vlanId" min="1" max="4094" placeholder="100" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="epgName">EPG Name</label>
-                        <input type="text" id="epgName" placeholder="EPG_PROD_01" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="networkSegment">Network Segment</label>
-                        <input type="text" id="networkSegment" placeholder="192.168.1.0/24" required>
-                    </div>
-                    <div class="form-group">
-                        <label class="checkbox-label">
-                            <input type="checkbox" id="segmentDhcp">
-                            <span>DHCP Enabled</span>
-                        </label>
-                    </div>
-                    <div class="form-group">
-                        <label for="segmentDescription">Description (Optional)</label>
-                        <input type="text" id="segmentDescription" placeholder="Additional notes">
-                    </div>
-                    <button type="submit" id="addSegmentBtn">Add Segment</button>
-                </form>
-            </div>
-            
-            <div class="card" id="allocateCard" style="display: none;">
-                <h2>Allocate Segment</h2>
-                <form id="allocateForm">
-                    <div class="form-group">
-                        <label for="allocationSite">Site</label>
-                        <select id="allocationSite" required>
-                            <option value="">Select site...</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="clusterName">Cluster Name</label>
-                        <input type="text" id="clusterName" placeholder="cluster-prod-01" required>
-                    </div>
-                    <button type="submit" id="allocateBtn">Allocate Segment</button>
-                </form>
-
-                <div id="allocationResult" style="margin-top: 20px;"></div>
-            </div>
-        </div>
-        
-        <div class="card full-width" id="bulkImportCard" style="display: none;">
-            <h2>Bulk Import Segments</h2>
-            <div class="form-group">
-                <label for="bulkImport">Paste CSV data (site,vlan_id,epg_name,segment,dhcp,description)</label>
-                <textarea id="bulkImport" placeholder="site1,100,EPG_PROD_01,192.168.1.0/24,true,Production segment
-site1,101,EPG_PROD_02,192.168.2.0/24,false,Production segment 2
-site2,200,EPG_DEV_01,193.0.1.0/24,true,Development segment"></textarea>
-            </div>
-            <button onclick="importBulk()">Import Segments</button>
         </div>
         
         <div class="card full-width">
@@ -167,12 +58,11 @@ site2,200,EPG_DEV_01,193.0.1.0/24,true,Development segment"></textarea>
                             <th>DHCP</th>
                             <th>Cluster</th>
                             <th>Status</th>
-                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody id="segmentsList">
                         <tr>
-                            <td colspan="8" class="empty-state">Loading segments...</td>
+                            <td colspan="7" class="empty-state">Loading segments...</td>
                         </tr>
                     </tbody>
                 </table>

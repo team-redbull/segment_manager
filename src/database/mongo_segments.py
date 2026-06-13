@@ -9,7 +9,6 @@ is gone entirely.
 
 import logging
 import asyncio
-from datetime import datetime, timezone
 from typing import Optional, List, Dict, Any
 
 from .mongo_client import get_segments_collection
@@ -113,11 +112,8 @@ async def create_segment(document: Dict[str, Any]) -> Dict[str, Any]:
     col = get_segments_collection()
     doc = {k: v for k, v in document.items() if k != "_id"}
     doc.setdefault("dhcp", False)
-    doc.setdefault("description", "")
     doc.setdefault("cluster_name", None)
-    doc.setdefault("allocated_at", None)
     doc.setdefault("released", False)
-    doc.setdefault("released_at", None)
 
     result = await col.insert_one(doc)
     invalidate_cache(CACHE_KEY_SEGMENTS)
@@ -168,9 +164,7 @@ async def allocate_segment(
     update = {
         "$set": {
             "cluster_name": cluster_name,
-            "allocated_at": datetime.now(timezone.utc),
             "released": False,
-            "released_at": None,
         }
     }
 

@@ -14,7 +14,6 @@ from ...database import (
     update_segment as _update_segment,
     allocate_segment as _allocate_segment,
 )
-from ..time_utils import get_current_utc
 
 logger = logging.getLogger(__name__)
 
@@ -58,12 +57,9 @@ class AllocationUtils:
     @staticmethod
     async def allocate_segment(segment_id: str, cluster_name: str) -> bool:
         """Allocate a segment to a cluster (kept for backward compatibility)."""
-        allocation_time = get_current_utc()
         return await _update_segment(segment_id, {
             "cluster_name": cluster_name,
-            "allocated_at": allocation_time,
-            "released": False,
-            "released_at": None
+            "released": False
         })
 
     @staticmethod
@@ -87,8 +83,7 @@ class AllocationUtils:
             # Single cluster — release fully
             return await _update_segment(segment["_id"], {
                 "cluster_name": None,
-                "released": True,
-                "released_at": get_current_utc()
+                "released": True
             })
 
         # Shared cluster — remove only this cluster
@@ -98,8 +93,7 @@ class AllocationUtils:
             if len(cluster_list) == 0:
                 return await _update_segment(segment["_id"], {
                     "cluster_name": None,
-                    "released": True,
-                    "released_at": get_current_utc()
+                    "released": True
                 })
             else:
                 return await _update_segment(segment["_id"], {

@@ -25,9 +25,6 @@ class SegmentService:
         Validators.validate_no_reserved_ips(segment.segment)
         Validators.validate_network_broadcast_gateway(segment.segment)
 
-        if segment.description:
-            Validators.validate_description(segment.description)
-
         existing_segments = await DatabaseUtils.get_segments_with_filters()
         if exclude_id:
             existing_segments = [s for s in existing_segments if str(s.get("_id")) != str(exclude_id)]
@@ -50,8 +47,7 @@ class SegmentService:
             "vlan_id": segment.vlan_id,
             "epg_name": segment.epg_name,
             "segment": segment.segment,
-            "dhcp": segment.dhcp,
-            "description": segment.description
+            "dhcp": segment.dhcp
         }
 
     @staticmethod
@@ -73,7 +69,7 @@ class SegmentService:
         site: Optional[str] = None,
         allocated: Optional[bool] = None
     ) -> List[Dict[str, Any]]:
-        """Search segments by cluster name, EPG name, VLAN ID, description, or segment"""
+        """Search segments by cluster name, EPG name, VLAN ID, or segment"""
         segments = await DatabaseUtils.search_segments(search_query, site, allocated)
         logger.debug(f"Found {len(segments)} matching segments for query '{search_query}'")
         return segments
@@ -168,7 +164,6 @@ class SegmentService:
     @log_operation_timing("update_segment_clusters", threshold_ms=2000)
     async def update_segment_clusters(segment_id: str, cluster_names: str) -> Dict[str, str]:
         """Update cluster assignment for a segment (for shared segments)"""
-        from datetime import datetime, timezone
         logger.info(f"Updating cluster assignment for segment: {segment_id}")
 
         Validators.validate_object_id(segment_id)
@@ -190,17 +185,13 @@ class SegmentService:
 
             if validated_clusters:
                 update_data["cluster_name"] = ",".join(validated_clusters)
-                update_data["allocated_at"] = datetime.now(timezone.utc)
                 update_data["released"] = False
-                update_data["released_at"] = None
             else:
                 update_data["cluster_name"] = None
                 update_data["released"] = True
-                update_data["released_at"] = datetime.now(timezone.utc)
         else:
             update_data["cluster_name"] = None
             update_data["released"] = True
-            update_data["released_at"] = datetime.now(timezone.utc)
 
         success = await DatabaseUtils.update_segment_by_id(segment_id, update_data)
 
@@ -243,7 +234,7 @@ class SegmentService:
             logger.warning("Bulk create called with empty segments list")
             raise HTTPException(
                 status_code=400,
-                detail="No valid segments found in CSV data. Please check the format: site,vlan_id,epg_name,segment,dhcp,description"
+                detail="No valid segments found in CSV data. Please check the format: site,vlan_id,epg_name,segment,dhcp"
             )
 
         try:

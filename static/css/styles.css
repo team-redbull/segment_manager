@@ -196,26 +196,6 @@ button:disabled {
     cursor: not-allowed;
 }
 
-button.delete {
-    background: #f56565;
-    padding: 8px 16px;
-    font-size: 13px;
-}
-
-button.delete:hover:not(:disabled) {
-    background: #e53e3e;
-}
-
-button.release {
-    background: #ed8936;
-    padding: 8px 16px;
-    font-size: 13px;
-}
-
-button.release:hover:not(:disabled) {
-    background: #dd6b20;
-}
-
 button.secondary {
     background: #718096;
     margin-left: 10px;
@@ -522,45 +502,6 @@ code {
     gap: 15px;
 }
 
-.header-actions {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-right: 90px;
-}
-
-.theme-toggle {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    background: var(--card-bg);
-    border: 1px solid var(--border-color);
-    border-radius: 50px;
-    padding: 8px 16px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 14px;
-    color: var(--text-color);
-    box-shadow: 0 2px 10px var(--shadow-color);
-    transition: all 0.3s ease;
-    z-index: 1000;
-}
-
-.theme-toggle:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 15px var(--shadow-color);
-}
-
-.theme-icon {
-    font-size: 16px;
-    transition: transform 0.3s ease;
-}
-
-.theme-toggle:hover .theme-icon {
-    transform: rotate(15deg);
-}
 
 
 /* Export Styles */
@@ -711,11 +652,6 @@ code {
     }
 }
 
-.login-modal-content {
-    max-width: 420px;
-    width: 90%;
-}
-
 @keyframes modalSlideIn {
     from {
         transform: translateY(-50px);
@@ -742,11 +678,6 @@ code {
     margin: 0;
     font-size: 1.2rem;
     font-weight: 600;
-}
-
-.login-modal-content {
-    max-width: 420px;
-    width: 90%;
 }
 
 .close-modal {
@@ -792,18 +723,6 @@ code {
 
 .modal-actions .btn {
     min-width: 100px;
-}
-
-/* Edit button styling - matches delete/release button style */
-button.edit {
-    background: #3182ce;
-    padding: 8px 16px;
-    font-size: 13px;
-    margin-right: 6px;
-}
-
-button.edit:hover:not(:disabled) {
-    background: #2c5282;
 }
 
 /* Dark theme modal adjustments */

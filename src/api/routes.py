@@ -85,7 +85,7 @@ async def search_segments(
     site: Optional[str] = None, 
     allocated: Optional[bool] = None
 ):
-    """Search segments by cluster name, EPG name, VLAN ID, description, or segment"""
+    """Search segments by cluster name, EPG name, VLAN ID, or segment"""
     return await SegmentService.search_segments(q, site, allocated)
 
 @router.post("/segments")

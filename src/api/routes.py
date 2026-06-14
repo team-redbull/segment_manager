@@ -71,7 +71,7 @@ async def release_vlan(
     _: bool = Depends(require_auth)
 ):
     """Release a VLAN segment allocation"""
-    return await AllocationService.release_vlan(request.cluster_name, request.site, request.vrf)
+    return await AllocationService.release_vlan(request.cluster_name, request.site)
 
 # Segment Management Routes
 @router.get("/segments")
@@ -85,7 +85,7 @@ async def search_segments(
     site: Optional[str] = None, 
     allocated: Optional[bool] = None
 ):
-    """Search segments by cluster name, EPG name, VLAN ID, description, or segment"""
+    """Search segments by cluster name, EPG name, VLAN ID, or segment"""
     return await SegmentService.search_segments(q, site, allocated)
 
 @router.post("/segments")
@@ -149,30 +149,6 @@ async def get_sites():
     """Get configured sites"""
     return await StatsService.get_sites()
 
-@router.get("/vrfs")
-async def get_vrfs():
-    """Get list of available VRFs from NetBox"""
-    return await SegmentService.get_vrfs()
-
-@router.get("/network-site-mapping")
-async def get_network_site_mapping():
-    """Get mapping of networks to available sites"""
-    from ..config.settings import NETWORK_SITE_IP_PREFIXES
-
-    # Build mapping: {network: [sites]}
-    mapping = {}
-    for (network, site) in NETWORK_SITE_IP_PREFIXES.keys():
-        if network not in mapping:
-            mapping[network] = []
-        if site not in mapping[network]:
-            mapping[network].append(site)
-
-    # Sort sites for each network
-    for network in mapping:
-        mapping[network] = sorted(mapping[network])
-
-    return {"mapping": mapping}
-
 @router.get("/stats")
 async def get_stats():
     """Get statistics per site"""
@@ -208,7 +184,7 @@ async def export_stats_csv():
 # Logs Management Routes
 @router.get("/logs")
 async def get_logs(lines: int = 100):
-    """Get the contents of the vlan_manager.log file
+    """Get the contents of the segments_manager.log file
     
     Args:
         lines: Number of lines to retrieve from the end of the log file (default: 100)

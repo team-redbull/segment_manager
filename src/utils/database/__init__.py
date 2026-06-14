@@ -1,4 +1,4 @@
-"""Database utilities module for VLAN Manager.
+"""Database utilities module for Segments Manager.
 
 This module provides a unified DatabaseUtils class that aggregates all database operations
 from specialized utility modules. This maintains backward compatibility with existing code.
@@ -37,7 +37,6 @@ class DatabaseUtils:
     check_vlan_exists = staticmethod(SegmentQueries.check_vlan_exists)
     check_vlan_exists_excluding_id = staticmethod(SegmentQueries.check_vlan_exists_excluding_id)
     search_segments = staticmethod(SegmentQueries.search_segments)
-    get_vrfs = staticmethod(SegmentQueries.get_vrfs)
 
     # Statistics operations
     get_site_statistics = staticmethod(StatisticsUtils.get_site_statistics)

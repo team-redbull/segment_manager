@@ -271,3 +271,7 @@ backup/
 data/
 test-data/
 *.json.lock
+
+# Planning agent scratch workspace / stale analysis docs
+.planning/
+docs/

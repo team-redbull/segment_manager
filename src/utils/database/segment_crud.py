@@ -6,7 +6,7 @@ Handles create, read, update, delete operations for segments.
 import logging
 from typing import Optional, Dict, Any
 
-from ...database.netbox_segments import (
+from ...database import (
     create_segment as _create_segment,
     get_segment_by_id as _get_segment_by_id,
     update_segment as _update_segment,
@@ -29,9 +29,7 @@ class SegmentCRUD:
         new_segment = {
             **segment_data,
             "cluster_name": None,
-            "allocated_at": None,
-            "released": False,
-            "released_at": None
+            "released": False
         }
 
         result = await _create_segment(new_segment)

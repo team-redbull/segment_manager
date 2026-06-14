@@ -675,6 +675,11 @@ Prefixes, VLANs: 600s TTL → ~75-80% hit rate
 **KISS Principle Applied**:
 - Removed parallel execution for cached lookups
 - Simple sequential code (easier to debug)
-- Only parallelize when actually beneficial (uncached API calls)
+- Only parallelize when actually beneficial (uncached API calls)   
 
 ---
+
+
+
+
+

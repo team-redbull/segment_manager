@@ -6,10 +6,11 @@ fullnameOverride: ""
 
 # Image configuration
 image:
-  repository: segments-manager
+  repository: ghcr.io/team-redbull/segments-manager
   tag: v2.0.0
   pullPolicy: IfNotPresent
-  pullSecrets: []
+  pullSecrets:
+    - name: ghcr-pull-secret
 
 # Pod configuration
 replicaCount: 1

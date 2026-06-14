@@ -38,7 +38,7 @@ async def lifespan(app: FastAPI):
     await close_storage()
 
 # FastAPI app - used by uvicorn server
-app = FastAPI(title="VLAN Manager API", lifespan=lifespan)
+app = FastAPI(title="Segments Manager API", lifespan=lifespan)
 
 # Custom StaticFiles class with caching headers
 class CachedStaticFiles(StaticFiles):

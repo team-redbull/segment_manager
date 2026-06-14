@@ -1,8 +1,8 @@
 # 🌐 VLAN Segment Manager
 
-![Docker Build](https://github.com/Roi12345/vlan-manager/workflows/Build%20and%20Push%20Docker%20Image/badge.svg)
-![Tests](https://github.com/Roi12345/vlan-manager/workflows/Test%20and%20Validate/badge.svg)
-![Local Build](https://github.com/Roi12345/vlan-manager/workflows/Build%20Local%20Podman%20Images/badge.svg)
+![Docker Build](https://github.com/Roi12345/segments-manager/workflows/Build%20and%20Push%20Docker%20Image/badge.svg)
+![Tests](https://github.com/Roi12345/segments-manager/workflows/Test%20and%20Validate/badge.svg)
+![Local Build](https://github.com/Roi12345/segments-manager/workflows/Build%20Local%20Podman%20Images/badge.svg)
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![Version](https://img.shields.io/badge/version-v3.1.0-green.svg)
 
@@ -77,17 +77,17 @@ python main.py
 ### Option 2: Container Deployment
 ```bash
 # Build container image
-podman build -t vlan-manager .
+podman build -t segments-manager .
 
 # Run with NetBox backend
 podman run -d \
-  --name vlan-manager \
+  --name segments-manager \
   -p 8000:8000 \
   -e NETBOX_URL="https://your-netbox-instance.com" \
   -e NETBOX_TOKEN="your-api-token-here" \
   -e SITES="site1,site2,site3" \
   -e SITE_PREFIXES="site1:192,site2:193,site3:194" \
-  vlan-manager
+  segments-manager
 ```
 
 ### Option 3: Air-Gapped Deployment
@@ -95,7 +95,7 @@ podman run -d \
 # On connected system - build and save image
 ./deploy/scripts/build-and-save.sh
 
-# Transfer deploy/podman/vlan-manager-latest.tar to air-gapped system
+# Transfer deploy/podman/segments-manager-latest.tar to air-gapped system
 
 # On air-gapped system - load and run
 cp .env.example .env  # Edit with your MongoDB details
@@ -187,7 +187,7 @@ SITE_PREFIXES="site1:192,site2:193,site3:194,site4:195"
 
 ### Storage Architecture - NetBox Integration
 
-**VLAN Manager acts as the intelligent API layer on top of NetBox:**
+**Segments Manager acts as the intelligent API layer on top of NetBox:**
 
 - **Your API**: Handles business logic, validation, allocation rules, site prefix enforcement
 - **NetBox**: Provides persistent storage (PostgreSQL), REST API, and professional IPAM UI
@@ -222,10 +222,10 @@ This project includes a comprehensive GitHub Actions CI/CD pipeline that automat
 **Docker Hub Images** (automatically published):
 ```bash
 # Pull latest version
-docker pull roi12345/vlan-manager:latest
+docker pull roi12345/segments-manager:latest
 
 # Pull specific version
-docker pull roi12345/vlan-manager:v2.4.0
+docker pull roi12345/segments-manager:v2.4.0
 ```
 
 **Podman Archive Images** (GitHub Actions artifacts):
@@ -265,17 +265,17 @@ See [CI-CD-README.md](CI-CD-README.md) for complete pipeline documentation.
 ### Docker/Podman Build
 ```bash
 # Build image
-podman build -t vlan-manager .
+podman build -t segments-manager .
 
 # Run with persistent storage
 podman run -d \
-  --name vlan-manager \
+  --name segments-manager \
   -p 8000:8000 \
   -v ./data:/app/data:Z \
   -e SITES="site1,site2,site3" \
   -e SITE_PREFIXES="site1:192,site2:193,site3:194" \
   --restart unless-stopped \
-  vlan-manager
+  segments-manager
 ```
 
 ### Enhanced Health Monitoring
@@ -326,12 +326,12 @@ Perfect for isolated networks. All data stored locally in JSON files.
 ./deploy/scripts/build-and-save.sh [tag]
 ```
 Creates:
-- `deploy/podman/vlan-manager-[tag].tar` - Container image
+- `deploy/podman/segments-manager-[tag].tar` - Container image
 - `deploy/podman/TRANSFER-INSTRUCTIONS.md` - Transfer guide
 
 ### 2. Transfer to Air-Gapped Network
 Copy these files:
-- `vlan-manager-[tag].tar` (container image)
+- `segments-manager-[tag].tar` (container image)
 - `load-and-run.sh` (deployment script)
 - `.env.example` (configuration template)
 
@@ -357,28 +357,28 @@ Complete Helm chart included for enterprise deployments.
 ### Installation
 ```bash
 # Basic deployment
-helm install vlan-manager ./deploy/helm \
+helm install segments-manager ./deploy/helm \
   --set config.sites="site1,site2,site3" \
   --set config.sitePrefixes="site1:192,site2:193,site3:194" \
   --set persistence.enabled=true
 
 # Production deployment with custom values
-helm install vlan-manager ./deploy/helm -f production-values.yaml
+helm install segments-manager ./deploy/helm -f production-values.yaml
 ```
 
 ### OpenShift Specific
 ```bash
 # Create project
-oc new-project vlan-manager
+oc new-project segments-manager
 
 # Deploy
-helm install vlan-manager ./deploy/helm \
+helm install segments-manager ./deploy/helm \
   --set config.sites="site1,site2,site3" \
   --set config.sitePrefixes="site1:192,site2:193,site3:194" \
   --set persistence.enabled=true
 
 # Expose route
-oc expose service vlan-manager
+oc expose service segments-manager
 ```
 
 ### Configuration Options
@@ -491,10 +491,10 @@ curl -H "Authorization: Token YOUR_TOKEN" https://your-netbox-url/api/status/
 #### Container Won't Start
 ```bash
 # Check logs
-podman logs vlan-manager
+podman logs segments-manager
 
 # Verify environment variables
-podman exec vlan-manager env | grep -E "NETBOX|SITES"
+podman exec segments-manager env | grep -E "NETBOX|SITES"
 ```
 
 #### Port Already in Use
@@ -503,7 +503,7 @@ podman exec vlan-manager env | grep -E "NETBOX|SITES"
 netstat -tlnp | grep :8000
 
 # Use different port
-podman run -p 8080:8000 vlan-manager
+podman run -p 8080:8000 segments-manager
 ```
 
 #### Web UI Not Loading
@@ -513,7 +513,7 @@ podman run -p 8080:8000 vlan-manager
 4. Check browser console for JavaScript errors
 
 ### Logs and Monitoring
-- **Container logs**: `podman logs vlan-manager`
+- **Container logs**: `podman logs segments-manager`
 - **Application logs**: `http://localhost:8000/api/logs`
 - **Health status**: `http://localhost:8000/api/health`
 - **Metrics**: `http://localhost:8000/api/stats`

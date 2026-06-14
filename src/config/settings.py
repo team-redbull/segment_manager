@@ -4,7 +4,7 @@ import sys
 
 # MongoDB Configuration
 MONGODB_URL = os.getenv("MONGODB_URL")
-MONGODB_DB_NAME = os.getenv("MONGODB_DB_NAME", "vlan_manager")
+MONGODB_DB_NAME = os.getenv("MONGODB_DB_NAME", "segments_manager")
 
 if not MONGODB_URL:
     error_msg = (
@@ -93,20 +93,24 @@ def setup_logging():
     log_level_str = os.getenv("LOG_LEVEL", "INFO").upper()
     log_level = getattr(logging, log_level_str, logging.INFO)
 
-    rotating_handler = RotatingFileHandler(
-        'vlan_manager.log',
-        maxBytes=50 * 1024 * 1024,
-        backupCount=5,
-        encoding='utf-8'
-    )
+    log_file = os.getenv("LOG_FILE", "/app/data/segments_manager.log")
+    handlers = [logging.StreamHandler(sys.stdout)]
+    try:
+        os.makedirs(os.path.dirname(log_file), exist_ok=True)
+        rotating_handler = RotatingFileHandler(
+            log_file,
+            maxBytes=50 * 1024 * 1024,
+            backupCount=5,
+            encoding='utf-8'
+        )
+        handlers.append(rotating_handler)
+    except (PermissionError, OSError):
+        pass
 
     logging.basicConfig(
         level=log_level,
         format='%(asctime)s - %(name)s - %(levelname)s - [%(filename)s:%(lineno)d] %(funcName)s() - %(message)s',
-        handlers=[
-            logging.StreamHandler(sys.stdout),
-            rotating_handler
-        ]
+        handlers=handlers
     )
     return logging.getLogger(__name__)
 

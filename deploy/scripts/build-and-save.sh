@@ -1,16 +1,16 @@
 #!/bin/bash
 
-# VLAN Manager - Build and Save Container Image
+# Segments Manager - Build and Save Container Image
 # This script builds the container image and saves it for air-gapped deployment
 
 set -e
 
-PROJECT_NAME="vlan-manager"
-IMAGE_NAME="vlan-manager"
+PROJECT_NAME="segments-manager"
+IMAGE_NAME="segments-manager"
 IMAGE_TAG="${1:-latest}"
 SAVE_DIR="$(dirname "$0")/../images"
 
-echo "🏗️  VLAN Manager - Build and Save Container Image"
+echo "🏗️  Segments Manager - Build and Save Container Image"
 echo "=================================================="
 
 # Check if podman is available

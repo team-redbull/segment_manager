@@ -1,4 +1,4 @@
-# VLAN Manager Helm Chart Values
+# Segments Manager Helm Chart Values
 
 # Global configuration
 nameOverride: ""
@@ -6,7 +6,7 @@ fullnameOverride: ""
 
 # Image configuration
 image:
-  repository: vlan-manager
+  repository: segments-manager
   tag: v2.0.0
   pullPolicy: IfNotPresent
   pullSecrets: []
@@ -19,16 +19,11 @@ podLabels: {}
 # Security context - runs as non-root user (no anyuid SCC needed)
 podSecurityContext:
   runAsNonRoot: true
-  runAsUser: 1001
-  runAsGroup: 1001
-  fsGroup: 1001
 
 securityContext:
   allowPrivilegeEscalation: false
   readOnlyRootFilesystem: false
   runAsNonRoot: true
-  runAsUser: 1001
-  runAsGroup: 1001
   capabilities:
     drop:
     - ALL
@@ -67,8 +62,8 @@ mongodb:
   # Example: mongodb://user:pass@mongodb:27017 or mongodb+srv://... for Atlas
   url: "mongodb://localhost:27017"
 
-  # Database name (optional, default: vlan_manager)
-  dbName: "vlan_manager"
+  # Database name (optional, default: segments_manager)
+  dbName: "segments_manager"
 
   # Use existing secret for MongoDB URL (optional)
   existingSecret: ""

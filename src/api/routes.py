@@ -184,7 +184,7 @@ async def export_stats_csv():
 # Logs Management Routes
 @router.get("/logs")
 async def get_logs(lines: int = 100):
-    """Get the contents of the vlan_manager.log file
+    """Get the contents of the segments_manager.log file
     
     Args:
         lines: Number of lines to retrieve from the end of the log file (default: 100)

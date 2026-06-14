@@ -36,6 +36,7 @@
             margin: 10px 0;
             font-family: 'Courier New', monospace;
             overflow-x: auto;
+            white-space: pre;
         }
         .endpoint {
             background: #f8f9fa;
@@ -212,337 +213,111 @@
         </div>
 
         <h1>🌐 VLAN Segment Manager - Help & Documentation</h1>
-        
-        <div class="toc">
-            <h3>Table of Contents</h3>
-            <ul>
-                <li><a href="#overview">Overview</a></li>
-                <li><a href="#core-concepts">Core Concepts</a></li>
-                <li><a href="#ui-guide">User Interface Guide</a></li>
-                <li><a href="#shared-segments">Shared Segments</a></li>
-                <li><a href="#api-reference">API Reference</a></li>
-                <li><a href="#examples">Examples</a></li>
-                <li><a href="#troubleshooting">Troubleshooting</a></li>
-            </ul>
+
+        <div class="warning">
+            <strong>Authentication required for changes:</strong> Every write operation (create, update, delete, allocate, release) requires logging in first. Open the <a href="/docs" target="_blank">Swagger UI (/docs)</a>, call <code>POST /api/auth/login</code> with <code>{"username": "admin", "password": "admin"}</code>, then use "Try it out" on the endpoints below — Swagger keeps the session cookie for you.
         </div>
 
-        <div class="help-section" id="overview">
-            <h2>📋 Overview</h2>
-            <p>The VLAN Segment Manager is a comprehensive tool for managing network VLAN segments across multiple sites. It supports automatic allocation, manual management, and advanced features like shared segments where multiple clusters can use the same VLAN.</p>
-            
-            <h3>Key Features</h3>
-            <ul>
-                <li><strong>Multi-Site Support:</strong> Manage VLANs across different sites (site1, site2, site3)</li>
-                <li><strong>VRF/Network Support:</strong> Multiple VRFs (Network1, Network2, Network3) for network segmentation</li>
-                <li><strong>DHCP Configuration:</strong> Enable/disable DHCP per segment for IP management</li>
-                <li><strong>NetBox Integration:</strong> Professional IPAM backend with PostgreSQL storage</li>
-                <li><strong>Flexible Subnets:</strong> Support for all subnet sizes (/16 to /29)</li>
-                <li><strong>Automatic Allocation:</strong> Automatically find and allocate available segments</li>
-                <li><strong>Shared Segments:</strong> Multiple clusters can share the same VLAN segment</li>
-                <li><strong>Manual Management:</strong> Create, edit, and delete segments manually</li>
-                <li><strong>Export Capabilities:</strong> Export data to CSV and Excel formats</li>
-                <li><strong>Real-time Search:</strong> Search segments by cluster, EPG, VLAN, or segment</li>
-                <li><strong>High Performance:</strong> 70-90% reduction in API calls through aggressive caching</li>
-            </ul>
-        </div>
-
-        <div class="help-section" id="core-concepts">
-            <h2>🧠 Core Concepts</h2>
-            
-            <h3>Sites</h3>
-            <p>The system manages three sites, each with specific IP prefix requirements:</p>
-            <ul>
-                <li><strong>site1:</strong> Segments must start with 192.x.x.x</li>
-                <li><strong>site2:</strong> Segments must start with 193.x.x.x</li>
-                <li><strong>site3:</strong> Segments must start with 194.x.x.x</li>
-            </ul>
-
-            <h3>Segment States</h3>
-            <ul>
-                <li><strong>Available:</strong> Segment is created but not allocated to any cluster</li>
-                <li><strong>Allocated:</strong> Segment is assigned to one or more clusters</li>
-                <li><strong>Released:</strong> Segment was previously allocated but is now available again</li>
-            </ul>
-
-            <h3>Allocation Logic</h3>
-            <p>When allocating a segment for a cluster:</p>
-            <ol>
-                <li>Check if the cluster already has a segment at the site</li>
-                <li>Check if the cluster is part of a shared segment</li>
-                <li>If not found, allocate the first available segment</li>
-                <li>If no segments available, return an error</li>
-            </ol>
-        </div>
-
-        <div class="help-section" id="ui-guide">
-            <h2>🖥️ User Interface Guide</h2>
-
-            <h3>Main Dashboard</h3>
-            <p>The main page provides an overview of segment statistics per site and access to all management functions.</p>
-
-            <h3>Adding Segments</h3>
-            <ol>
-                <li>Select the target site from the dropdown</li>
-                <li>Enter a unique VLAN ID (1-4094)</li>
-                <li>Provide an EPG (Endpoint Group) name</li>
-                <li>Enter the network segment (must match site prefix, e.g., 192.168.1.0/24)</li>
-                <li>Select the VRF/Network (Network1, Network2, or Network3)</li>
-                <li>Enable/disable DHCP as needed</li>
-                <li>Add an optional description</li>
-                <li>Click "Add Segment"</li>
-            </ol>
-
-            <h3>Allocating Segments</h3>
-            <ol>
-                <li>Enter the cluster name</li>
-                <li>Select the site</li>
-                <li>Select the VRF/Network</li>
-                <li>Click "Allocate Segment"</li>
-                <li>The system will automatically find and allocate an available segment in the specified VRF</li>
-            </ol>
-
-            <h3>Managing Segments</h3>
-            <p>In the segments table, you can:</p>
-            <ul>
-                <li><strong>Edit:</strong> Click the Edit button to modify segment details or cluster assignments</li>
-                <li><strong>Release:</strong> Click the Release button to free up an allocated segment</li>
-                <li><strong>Delete:</strong> Remove segments that are not allocated</li>
-                <li><strong>Search:</strong> Use the search bar to find specific segments</li>
-                <li><strong>Filter:</strong> Use tabs to filter by status (All/Available/Allocated)</li>
-            </ul>
-        </div>
-
-        <div class="help-section" id="shared-segments">
-            <h2>🤝 Shared Segments</h2>
-            <p>Shared segments allow multiple clusters to use the same VLAN, which is useful for clusters that need to communicate on the same network segment.</p>
-
-            <h3>Creating Shared Segments</h3>
-            <ol>
-                <li>Click "Edit" on any segment (allocated or available)</li>
-                <li>In the "Cluster Name(s)" field, enter multiple cluster names separated by commas</li>
-                <li>Example: <code>cluster1,cluster2,cluster3</code></li>
-                <li>Click "Update Segment"</li>
-            </ol>
-
-            <h3>Managing Shared Segments</h3>
-            <ul>
-                <li><strong>Add clusters:</strong> Edit the segment and add more cluster names</li>
-                <li><strong>Remove clusters:</strong> Edit and remove specific cluster names from the list</li>
-                <li><strong>Release segment:</strong> Leave the cluster field empty to release all allocations</li>
-            </ul>
-
-            <div class="example">
-                <h4>Example Scenarios:</h4>
-                <ul>
-                    <li><strong>Single to Shared:</strong> <code>cluster1</code> → <code>cluster1,cluster2</code></li>
-                    <li><strong>Add to Shared:</strong> <code>cluster1,cluster2</code> → <code>cluster1,cluster2,cluster3</code></li>
-                    <li><strong>Remove from Shared:</strong> <code>cluster1,cluster2,cluster3</code> → <code>cluster1,cluster2</code></li>
-                    <li><strong>Release All:</strong> <code>cluster1,cluster2</code> → <em>(empty)</em></li>
-                </ul>
-            </div>
-
-            <div class="warning">
-                <strong>Note:</strong> When using the API to release a single cluster from a shared segment, only that specific cluster is removed. Other clusters continue to use the segment.
-            </div>
-        </div>
-
-        <div class="help-section" id="api-reference">
-            <h2>🔌 API Reference</h2>
-            <p>All API endpoints use JSON for request/response data and are prefixed with <code>/api</code>.</p>
-
-            <h3>Segment Management</h3>
-            
-            <div class="endpoint">
-                <span class="method get">GET</span>
-                <strong>/api/segments</strong> - Get all segments
-                <div class="code-block">
-Query Parameters:
-- site (optional): Filter by site
-- allocated (optional): Filter by allocation status (true/false)
-</div>
-            </div>
-
+        <div class="help-section" id="add-segment">
+            <h2>➕ How to Add a New Segment</h2>
+            <p>Use the Swagger UI to call:</p>
             <div class="endpoint">
                 <span class="method post">POST</span>
                 <strong>/api/segments</strong> - Create a new segment
-                <div class="code-block">
-{
+                <div class="code-block">{
   "site": "site1",
-  "vlan_id": 100,
-  "epg_name": "EPG_PROD_01",
-  "segment": "192.168.1.0/24",
-  "vrf": "Network1",
-  "dhcp": false,
-  "description": "Production segment"
-}
-</div>
+  "vlan_id": 150,
+  "epg_name": "EPG_WEB",
+  "segment": "192.168.15.0/24",
+  "dhcp": false
+}</div>
             </div>
+            <p>Notes:</p>
+            <ul>
+                <li><strong>vlan_id</strong> must be unique within the site (1-4094)</li>
+                <li><strong>segment</strong> must be a valid network address (e.g. <code>192.168.15.0/24</code>, not a host address) and must start with the site's configured IP prefix (e.g. site1 → 192.x.x.x)</li>
+                <li><strong>epg_name</strong> must be unique for the same VLAN ID at a site</li>
+                <li>Subnet mask must be between /16 and /29</li>
+            </ul>
+        </div>
 
-            <div class="endpoint">
-                <span class="method get">GET</span>
-                <strong>/api/segments/{id}</strong> - Get specific segment
-            </div>
-
-            <div class="endpoint">
-                <span class="method put">PUT</span>
-                <strong>/api/segments/{id}</strong> - Update segment
-                <div class="code-block">
-{
-  "site": "site1",
-  "vlan_id": 100,
-  "epg_name": "EPG_UPDATED",
-  "segment": "192.168.1.0/24",
-  "vrf": "Network1",
-  "dhcp": true,
-  "description": "Updated description"
-}
-</div>
-            </div>
-
-            <div class="endpoint">
-                <span class="method put">PUT</span>
-                <strong>/api/segments/{id}/clusters</strong> - Update cluster assignment
-                <div class="code-block">
-{
-  "cluster_names": "cluster1,cluster2,cluster3"
-}
-</div>
-            </div>
-
-            <div class="endpoint">
-                <span class="method delete">DELETE</span>
-                <strong>/api/segments/{id}</strong> - Delete segment (only if not allocated)
-            </div>
-
-            <h3>VLAN Allocation</h3>
-
+        <div class="help-section" id="allocate-segment">
+            <h2>📌 How to Allocate a Segment</h2>
+            <p>Allocation automatically finds an available segment at the site and assigns it to the given cluster name.</p>
             <div class="endpoint">
                 <span class="method post">POST</span>
-                <strong>/api/allocate-vlan</strong> - Allocate segment for cluster
-                <div class="code-block">
-{
-  "cluster_name": "my-cluster",
-  "site": "site1",
-  "vrf": "Network1"
-}
-</div>
-            </div>
-
-            <div class="endpoint">
-                <span class="method post">POST</span>
-                <strong>/api/release-vlan</strong> - Release cluster's segment
-                <div class="code-block">
-{
-  "cluster_name": "my-cluster",
+                <strong>/api/allocate-vlan</strong> - Allocate a segment for a cluster
+                <div class="code-block">{
+  "cluster_name": "web-cluster",
   "site": "site1"
-}
-</div>
+}</div>
             </div>
+            <p>If the cluster already has a segment at that site, the existing segment is returned instead of allocating a new one. If no segments are available, the request fails — create more segments first.</p>
 
-            <h3>Statistics & Information</h3>
-
+            <h3>Shared Segments</h3>
+            <p>To assign multiple clusters to the same segment, allocate it to one cluster first, then update the cluster list directly:</p>
             <div class="endpoint">
-                <span class="method get">GET</span>
-                <strong>/api/stats</strong> - Get site statistics
-            </div>
-
-            <div class="endpoint">
-                <span class="method get">GET</span>
-                <strong>/api/sites</strong> - Get available sites
-            </div>
-
-            <div class="endpoint">
-                <span class="method get">GET</span>
-                <strong>/api/vrfs</strong> - Get available VRFs/Networks from NetBox
-            </div>
-
-            <div class="endpoint">
-                <span class="method get">GET</span>
-                <strong>/api/health</strong> - Health check with NetBox connectivity
-            </div>
-
-            <h3>Search & Export</h3>
-
-            <div class="endpoint">
-                <span class="method get">GET</span>
-                <strong>/api/segments/search</strong> - Search segments
-                <div class="code-block">
-Query Parameters:
-- q: Search query (cluster, EPG, VLAN ID, description, or segment)
-- site (optional): Filter by site
-- allocated (optional): Filter by allocation status
-</div>
-            </div>
-
-            <div class="endpoint">
-                <span class="method get">GET</span>
-                <strong>/api/export/segments/csv</strong> - Export segments as CSV
-            </div>
-
-            <div class="endpoint">
-                <span class="method get">GET</span>
-                <strong>/api/export/segments/excel</strong> - Export segments as Excel
+                <span class="method put">PUT</span>
+                <strong>/api/segments/{segment_id}/clusters</strong> - Update cluster assignment
+                <div class="code-block">{
+  "cluster_names": "frontend,backend,database"
+}</div>
             </div>
         </div>
 
-        <div class="help-section" id="examples">
-            <h2>💡 Examples</h2>
+        <div class="help-section" id="delete-segment">
+            <h2>🗑️ How to Delete a Segment</h2>
+            <p>First find the segment's ID, then delete it. A segment can only be deleted if it is <strong>not currently allocated</strong>.</p>
+            <div class="endpoint">
+                <span class="method get">GET</span>
+                <strong>/api/segments/search?q=EPG_WEB</strong> - Find the segment ID
+            </div>
+            <div class="endpoint">
+                <span class="method delete">DELETE</span>
+                <strong>/api/segments/{segment_id}</strong> - Delete the segment
+            </div>
+            <div class="warning">
+                <strong>Note:</strong> If the segment is allocated, deleting it fails. Deallocate it first (see below).
+            </div>
+        </div>
 
-            <h3>Example 1: Create and Allocate a Segment</h3>
-            <div class="code-block">
-# 1. Get available VRFs
-curl "http://localhost:8000/api/vrfs"
+        <div class="help-section" id="deallocate-segment">
+            <h2>🔓 How to Deallocate a Segment</h2>
+            <p>Releasing frees the segment so it can be allocated to another cluster.</p>
+            <div class="endpoint">
+                <span class="method post">POST</span>
+                <strong>/api/release-vlan</strong> - Release a cluster's segment
+                <div class="code-block">{
+  "cluster_name": "web-cluster",
+  "site": "site1"
+}</div>
+            </div>
+            <p>For a shared segment, this only removes the specified cluster from the assignment — other clusters remain allocated. To release all clusters from a shared segment at once, set an empty cluster list via the clusters endpoint:</p>
+            <div class="endpoint">
+                <span class="method put">PUT</span>
+                <strong>/api/segments/{segment_id}/clusters</strong> - Release all clusters
+                <div class="code-block">{
+  "cluster_names": ""
+}</div>
+            </div>
+        </div>
 
-# 2. Create a new segment
-curl -X POST "http://localhost:8000/api/segments" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "site": "site1",
-    "vlan_id": 150,
-    "epg_name": "EPG_WEB",
-    "segment": "192.168.15.0/24",
-    "vrf": "Network1",
-    "dhcp": false,
-    "description": "Web servers segment"
-  }'
-
-# 3. Allocate it to a cluster
-curl -X POST "http://localhost:8000/api/allocate-vlan" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "cluster_name": "web-cluster",
-    "site": "site1",
-    "vrf": "Network1"
-  }'
-</div>
-
-            <h3>Example 2: Create Shared Segment</h3>
-            <div class="code-block">
-# 1. First allocate to one cluster
-curl -X POST "http://localhost:8000/api/allocate-vlan" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "cluster_name": "frontend",
-    "site": "site1",
-    "vrf": "Network2"
-  }'
-
-# 2. Update to share with multiple clusters
-curl -X PUT "http://localhost:8000/api/segments/{segment_id}/clusters" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "cluster_names": "frontend,backend,database"
-  }'
-</div>
-
-            <h3>Example 3: Search Segments</h3>
-            <div class="code-block">
-# Search for segments containing "web"
-curl "http://localhost:8000/api/segments/search?q=web"
-
-# Search allocated segments in site1
-curl "http://localhost:8000/api/segments/search?q=cluster&site=site1&allocated=true"
-</div>
+        <div class="help-section" id="add-site">
+            <h2>🏗️ How to Add a New Site (in code)</h2>
+            <p>Sites are configured entirely via environment variables — no code changes are needed for a basic new site.</p>
+            <ol>
+                <li>Add the new site name to the <code>SITES</code> environment variable (comma-separated list), e.g. in <code>.env</code>:
+                    <div class="code-block">SITES="site1,site2,site3,site4"</div>
+                </li>
+                <li>Add a corresponding entry to <code>SITE_PREFIXES</code> giving the IP prefix (first octet) used to validate segments for that site:
+                    <div class="code-block">SITE_PREFIXES="site1:192,site2:193,site3:194,site4:195"</div>
+                </li>
+                <li>Restart the application.</li>
+            </ol>
+            <div class="warning">
+                <strong>Fail-fast validation:</strong> On startup, <code>validate_site_prefixes()</code> (in <code>src/config/settings.py</code>) checks that every site in <code>SITES</code> has a matching entry in <code>SITE_PREFIXES</code>. If a site is missing its prefix, the app crashes immediately with a clear error message rather than allowing inconsistent runtime behavior.
+            </div>
+            <p>Once configured, the new site will automatically appear in <code>/api/sites</code>, the site filter dropdown, and the statistics dashboard. Any segment created for that site must use a CIDR starting with its configured prefix.</p>
         </div>
 
         <div class="help-section" id="troubleshooting">
@@ -573,7 +348,7 @@ curl "http://localhost:8000/api/segments/search?q=cluster&site=site1&allocated=t
 
             <h3>Best Practices</h3>
             <ul>
-                <li>Use descriptive EPG names and descriptions</li>
+                <li>Use descriptive EPG names</li>
                 <li>Plan your VLAN ID ranges per site to avoid conflicts</li>
                 <li>Use shared segments sparingly and document which clusters share them</li>
                 <li>Regularly export data for backup purposes</li>
@@ -584,8 +359,8 @@ curl "http://localhost:8000/api/segments/search?q=cluster&site=site1&allocated=t
             <p>For additional support or to report issues:</p>
             <ul>
                 <li>Check the application logs for detailed error messages</li>
-                <li>Use the health endpoint to verify system status</li>
-                <li>Consult the API reference for correct request formats</li>
+                <li>Use the <code>/api/health</code> endpoint to verify system status</li>
+                <li>Consult the <a href="/docs" target="_blank">Swagger UI (/docs)</a> for full request/response formats</li>
             </ul>
         </div>
 

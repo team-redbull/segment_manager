@@ -192,17 +192,11 @@ async function loadSites() {
         const sites = data.sites;
         allSites = sites;
 
-        const segmentSiteSelect = document.getElementById('segmentSite');
-        const allocationSiteSelect = document.getElementById('allocationSite');
         const siteFilterSelect = document.getElementById('siteFilter');
 
-        segmentSiteSelect.innerHTML = '<option value="">Select site...</option>';
-        allocationSiteSelect.innerHTML = '<option value="">Select site...</option>';
         siteFilterSelect.innerHTML = '<option value="">All Sites</option>';
 
         sites.forEach(site => {
-            segmentSiteSelect.innerHTML += `<option value="${site}">${site}</option>`;
-            allocationSiteSelect.innerHTML += `<option value="${site}">${site}</option>`;
             siteFilterSelect.innerHTML += `<option value="${site}">${site}</option>`;
         });
 
